@@ -1,4 +1,4 @@
-import taskForm from "./taskForm.js"
+import taskForm from "./form.js"
 
 const homePage = () =>{
     const content = document.getElementById('content');

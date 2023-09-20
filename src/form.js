@@ -1,4 +1,4 @@
-
+// import todo from "./todo";
 
 const taskForm = () =>{
     const content = document.getElementById('content'); 
@@ -63,6 +63,8 @@ const taskForm = () =>{
     footerContent.classList.add('footer-content');
 
     //priority input radio
+    // let selectedValue = "";
+
     const priorityContent = document.createElement('div');
     priorityContent.classList.add('priority-content');
 
@@ -76,30 +78,46 @@ const taskForm = () =>{
     lowInput.type = 'radio';
     lowInput.id = 'Low';
     lowInput.name = 'priority';
+    lowInput.value = 'low';
     priorityContent.appendChild(lowInput);
     const lowLabel = document.createElement('label');
     lowLabel.setAttribute('for','Low');
     lowLabel.textContent = "Low";
+    // lowInput.onclick = function(){
+    //     getPriorityValue()
+    //     console.log(`Selected Priority: ${selectedValue}`);
+    // }
     priorityContent.appendChild(lowLabel);
+
 
     const mediumInput = document.createElement('input');
     mediumInput.type = 'radio';
     mediumInput.id = 'Medium';
     mediumInput.name = 'priority';
+    mediumInput.value = 'medium';
     priorityContent.appendChild(mediumInput);
     const mediumLabel = document.createElement('label');
     mediumLabel.setAttribute('for','Medium');
     mediumLabel.textContent = "Medium";
+    // mediumInput.onclick = function(){
+    //     getPriorityValue()
+    // }
     priorityContent.appendChild(mediumLabel);
 
     const highInput = document.createElement('input');
     highInput.type = 'radio';
     highInput.id = 'High';
     highInput.name = 'priority';
+    highInput.value = 'high';
     priorityContent.appendChild(highInput);
     const highLabel = document.createElement('label');
     highLabel.setAttribute('for','High');
     highLabel.textContent = "High";
+    // highInput.onclick = function(){
+    //     getPriorityValue()
+    // }
+
+
     priorityContent.appendChild(highLabel);
 
     footerContent.appendChild(priorityContent);
@@ -111,6 +129,21 @@ const taskForm = () =>{
     const submitButton = document.createElement('button');
     submitButton.type = 'submit';
     submitButton.textContent = 'submit';
+
+    submitButton.onclick = function(){
+        // Assuming that the radio buttons share the same 'name' attribute, in this case, 'priority'.
+        const selectedPriority = document.querySelector('input[name="priority"]:checked');
+    
+        if (selectedPriority) {
+        // If a radio button is selected, its value can be retrieved using the 'value' property.
+        const selectedValue = selectedPriority.value;
+        console.log(`Selected Priority: ${selectedValue}`);
+        return;
+        } else {
+        console.log('No priority selected.'); // Handle the case where no radio button is selected.
+        }
+        // console.log(selectedValue);
+    }
 
     submitContent.appendChild(submitButton);
 
@@ -127,6 +160,12 @@ const taskForm = () =>{
         }
     }
     content.appendChild(modal);
+
+    const getPriorityValue = () => {
+        
+    }
 }
+
+
 
 export default taskForm;
