@@ -25,14 +25,13 @@ const taskForm = () =>{
     
     //form
     const toDoForm = document.createElement('div');
-    // toDoForm.action = '#';
-    // toDoForm.method = 'post';
     
     //title
     const titleTextarea = document.createElement('textarea');
-    titleTextarea.cols = "100"
+    titleTextarea.cols = "100";
     titleTextarea.maxLength = "40";
-    titleTextarea.placeholder = "title"
+    titleTextarea.placeholder = "title";
+    titleTextarea.setAttribute("required", "");
     toDoForm.appendChild(titleTextarea);
 
     //details
@@ -40,6 +39,7 @@ const taskForm = () =>{
     detailTextarea.cols = "100"
     detailTextarea.rows = "10"
     detailTextarea.placeholder = "details"
+    detailTextarea.setAttribute("required", "");
     toDoForm.appendChild(detailTextarea);
 
     //date
@@ -47,13 +47,14 @@ const taskForm = () =>{
     dateContent.classList.add('date-content');
 
     const dateLabel = document.createElement('label');
-    dateLabel.for = 'date';
+    dateLabel.setAttribute('for','date');
     dateLabel.textContent = 'Due date:  ';
     dateContent.appendChild(dateLabel);
 
     const dateInput = document.createElement('input');
     dateInput.type = 'date';
     dateInput.id = 'date';
+    dateInput.setAttribute("required", "");
     dateContent.appendChild(dateInput);
     
     toDoForm.appendChild(dateContent);
@@ -62,9 +63,7 @@ const taskForm = () =>{
     const footerContent = document.createElement('div');
     footerContent.classList.add('footer-content');
 
-    //priority input radio
-    // let selectedValue = "";
-
+    //priority input radio   
     const priorityContent = document.createElement('div');
     priorityContent.classList.add('priority-content');
 
@@ -79,16 +78,12 @@ const taskForm = () =>{
     lowInput.id = 'Low';
     lowInput.name = 'priority';
     lowInput.value = 'low';
+    lowInput.setAttribute("required", "");
     priorityContent.appendChild(lowInput);
     const lowLabel = document.createElement('label');
     lowLabel.setAttribute('for','Low');
     lowLabel.textContent = "Low";
-    // lowInput.onclick = function(){
-    //     getPriorityValue()
-    //     console.log(`Selected Priority: ${selectedValue}`);
-    // }
     priorityContent.appendChild(lowLabel);
-
 
     const mediumInput = document.createElement('input');
     mediumInput.type = 'radio';
@@ -98,10 +93,7 @@ const taskForm = () =>{
     priorityContent.appendChild(mediumInput);
     const mediumLabel = document.createElement('label');
     mediumLabel.setAttribute('for','Medium');
-    mediumLabel.textContent = "Medium";
-    // mediumInput.onclick = function(){
-    //     getPriorityValue()
-    // }
+    mediumLabel.textContent = "Medium";   
     priorityContent.appendChild(mediumLabel);
 
     const highInput = document.createElement('input');
@@ -112,14 +104,8 @@ const taskForm = () =>{
     priorityContent.appendChild(highInput);
     const highLabel = document.createElement('label');
     highLabel.setAttribute('for','High');
-    highLabel.textContent = "High";
-    // highInput.onclick = function(){
-    //     getPriorityValue()
-    // }
-
-
+    highLabel.textContent = "High";   
     priorityContent.appendChild(highLabel);
-
     footerContent.appendChild(priorityContent);
 
     //submit
@@ -136,9 +122,10 @@ const taskForm = () =>{
 
         let todo1 = new todo(titleTextarea.value, detailTextarea.value,dateInput.value, priorityValue)
         todoList.push(todo1);
-        console.log(todoList);
+        console.log(todoList.length);
 
         updateStorage("todoList",todoList)
+        updateTaskListDOM()
 
         titleTextarea.value = "" ;
         detailTextarea.value = "" ;
@@ -148,18 +135,9 @@ const taskForm = () =>{
         highInput.checked = false;
     }
 
-    const updateStorage = (key, arr) =>{
-        const stringifiedObj = JSON.stringify(arr) ;
-
-        localStorage.setItem(`${key}`, stringifiedObj);
-    }
-
     submitContent.appendChild(submitButton);
-
     footerContent.appendChild(submitContent);
-
     toDoForm.appendChild(footerContent);
-
     modalContent.appendChild(toDoForm);
     
     //when click on window close the modal
@@ -170,22 +148,57 @@ const taskForm = () =>{
     }
     content.appendChild(modal);
 
-     const getPriorityValue = () => {
-        // Assuming that the radio buttons share the same 'name' attribute, in this case, 'priority'.
-        const selectedPriority = document.querySelector('input[name="priority"]:checked');
+    const getPriorityValue = () => {
+        const selectedPriority = document.querySelector('input[name="priority"]:checked'); // Assuming that the radio buttons share the same 'name' attribute, in this case, 'priority'.
     
         if (selectedPriority) {
-        // If a radio button is selected, its value can be retrieved using the 'value' property.
-        const selectedValue = selectedPriority.value;
+        const selectedValue = selectedPriority.value; // If a radio button is selected, its value can be retrieved using the 'value' property.
         // console.log(`Selected Priority: ${selectedValue}`);
         return selectedValue;
         } else {
         console.log('No priority selected.'); // Handle the case where no radio button is selected.
         }
-        // console.log(selectedValue);
-     }
+    }
+
+    const updateStorage = (key, arr) =>{
+        const stringifiedObj = JSON.stringify(arr) ;
+        localStorage.setItem(`${key}`, stringifiedObj);
+    }
+
+    const updateTaskListDOM = () => {
+        const taskList = document.getElementById('container')
+        let currentList = localStorage.getItem("todoList");
+        let parseObj = JSON.parse(currentList);
+
+        let priorityValue = getPriorityValue();
+        
+        taskList.innerHTML = "";
+
+        for(let i = 0; i < parseObj.length; i++){
+            const taskCard = document.createElement('div');
+
+            taskCard.innerHTML = 
+            `<div>
+                <input class="checkbox" type="checkbox">
+                <span class = "title">${parseObj[i].title}</span>
+                <button class="details">details</button>
+                <span class="date">${parseObj[i].date}</span>
+                <span class="priority">${priorityValue}</span>
+                <button class="edit">edit</button>
+                <button class="delete">delete</button>
+            </div>`;
+            taskList.appendChild(taskCard);
+            const deleteButton = document.querySelector('.delete');
+            deleteButton.onclick = function(){
+                const collection = taskCard.children;
+                console.log(collection[i]);
+                taskCard.removeChild(collection[i]);
+            }
+        }
+    }
+    const deleteTask = () => {
+        
+    }
 }
-
-
 
 export default taskForm;
