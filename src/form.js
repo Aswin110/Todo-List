@@ -1,4 +1,4 @@
-// import todo from "./todo";
+import todo from "./todo";
 
 const taskForm = () =>{
     const content = document.getElementById('content'); 
@@ -24,9 +24,9 @@ const taskForm = () =>{
     modalContent.appendChild(closeElement);
     
     //form
-    const toDoForm = document.createElement('form');
-    toDoForm.action = '#';
-    toDoForm.method = 'post';
+    const toDoForm = document.createElement('div');
+    // toDoForm.action = '#';
+    // toDoForm.method = 'post';
     
     //title
     const titleTextarea = document.createElement('textarea');
@@ -130,19 +130,28 @@ const taskForm = () =>{
     submitButton.type = 'submit';
     submitButton.textContent = 'submit';
 
+    let todoList = [];
     submitButton.onclick = function(){
-        // Assuming that the radio buttons share the same 'name' attribute, in this case, 'priority'.
-        const selectedPriority = document.querySelector('input[name="priority"]:checked');
-    
-        if (selectedPriority) {
-        // If a radio button is selected, its value can be retrieved using the 'value' property.
-        const selectedValue = selectedPriority.value;
-        console.log(`Selected Priority: ${selectedValue}`);
-        return;
-        } else {
-        console.log('No priority selected.'); // Handle the case where no radio button is selected.
-        }
-        // console.log(selectedValue);
+        let priorityValue = getPriorityValue();
+
+        let todo1 = new todo(titleTextarea.value, detailTextarea.value,dateInput.value, priorityValue)
+        todoList.push(todo1);
+        console.log(todoList);
+
+        updateStorage("todoList",todoList)
+
+        titleTextarea.value = "" ;
+        detailTextarea.value = "" ;
+        dateInput.value = "" ;
+        lowInput.checked = false;
+        mediumInput.checked = false;
+        highInput.checked = false;
+    }
+
+    const updateStorage = (key, arr) =>{
+        const stringifiedObj = JSON.stringify(arr) ;
+
+        localStorage.setItem(`${key}`, stringifiedObj);
     }
 
     submitContent.appendChild(submitButton);
@@ -161,9 +170,20 @@ const taskForm = () =>{
     }
     content.appendChild(modal);
 
-    // const getPriorityValue = () => {
-        
-    // }
+     const getPriorityValue = () => {
+        // Assuming that the radio buttons share the same 'name' attribute, in this case, 'priority'.
+        const selectedPriority = document.querySelector('input[name="priority"]:checked');
+    
+        if (selectedPriority) {
+        // If a radio button is selected, its value can be retrieved using the 'value' property.
+        const selectedValue = selectedPriority.value;
+        // console.log(`Selected Priority: ${selectedValue}`);
+        return selectedValue;
+        } else {
+        console.log('No priority selected.'); // Handle the case where no radio button is selected.
+        }
+        // console.log(selectedValue);
+     }
 }
 
 
