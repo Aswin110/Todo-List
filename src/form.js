@@ -161,9 +161,9 @@ const taskForm = () =>{
     }
     content.appendChild(modal);
 
-    const getPriorityValue = () => {
+    // const getPriorityValue = () => {
         
-    }
+    // }
 }
 
 
