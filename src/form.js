@@ -127,7 +127,7 @@ const taskForm = () =>{
         console.log(todoList.length);
 
         updateStorage("todoList",todoList,todoObj)
-        updateOnSubmit()
+        updateDOM()
 
         titleTextarea.value = "" ;
         detailTextarea.value = "" ;
@@ -139,9 +139,11 @@ const taskForm = () =>{
 
     const updateStorage = (key, arr,obj) =>{
         const name = localStorage.getItem(key)
+        // if the key do not exists.  Create new key and set the data
         if(!name){
             const stringifiedObj = JSON.stringify(arr) ;
             localStorage.setItem(`${key}`, stringifiedObj);
+        //else push the data in the existing key
         }else{
             const existingData = localStorage.getItem(key);
         
@@ -151,6 +153,18 @@ const taskForm = () =>{
 
             localStorage.setItem(key, JSON.stringify(parsedData));
         }
+    }
+
+    const getLocalStorageData= (key) =>{
+        const existingData = localStorage.getItem(key);
+        
+        let Data = existingData ? JSON.parse(existingData) : {};
+
+        return Data;
+    }
+
+    const setLocalStorageData = (key, data) => {
+        localStorage.setItem(key , JSON.stringify(data));
     }
 
     submitContent.appendChild(submitButton);
@@ -178,11 +192,11 @@ const taskForm = () =>{
         }
     }
 
-    const updateOnSubmit = () => {
-        
+    const updateDOM = () => {
+
         let currentList = localStorage.getItem("todoList");
         let parseObj = JSON.parse(currentList);
-        console.log('parseObj',parseObj)
+        
         const taskList = document.getElementById('container');
         taskList.innerHTML = "";
 
@@ -194,17 +208,21 @@ const taskForm = () =>{
             const checkboxInput = document.createElement('input');
             checkboxInput.classList.add('checkbox');
             checkboxInput.type = "checkbox";
-            var checkbox = document.querySelector("input[name=checkbox]");
 
             checkboxInput.addEventListener('change', function() {
             if (this.checked) {
                 console.log("Checkbox is checked..");
+                
                 titleInput.style.textDecoration = "line-through";
                 dueDateInput.style.textDecoration = "line-through";
                 priorityInput.style.textDecoration = "line-through";
                 detailsInput.style.textDecoration = "line-through";
             } else {
                 console.log("Checkbox is not checked..");
+                titleInput.style.textDecoration = "none";
+                dueDateInput.style.textDecoration = "none";
+                priorityInput.style.textDecoration = "none";
+                detailsInput.style.textDecoration = "none"
             }
             });
 
@@ -249,13 +267,12 @@ const taskForm = () =>{
         }        
     } 
     const deleteTasks = (num) =>{
-        console.log('parsed',num);
+        
         let parsedData = [];
         let currentList = localStorage.getItem("todoList");
         if (currentList) {
             try {
                parsedData = JSON.parse(currentList);
-            //    console.log(parsedData);
             } catch (error) {
                 console.error('Error parsing JSON data:', error);
             }
@@ -265,9 +282,10 @@ const taskForm = () =>{
             parsedData = parsedData.filter((task, index) => index !== parseInt(num));
         
             localStorage.setItem('todoList', JSON.stringify(parsedData));
-            updateOnSubmit();
+            updateDOM();
         }
     } 
+    return { updateDOM , deleteTasks}
 }
 
 export default taskForm;

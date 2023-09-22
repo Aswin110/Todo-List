@@ -17,17 +17,28 @@ window.addEventListener("load", () => {
         const checkboxInput = document.createElement('input');
         checkboxInput.classList.add('checkbox');
         checkboxInput.type = "checkbox";
-        var checkbox = document.querySelector("input[name=checkbox]");
 
         checkboxInput.addEventListener('change', function() {
         if (this.checked) {
             console.log("Checkbox is checked..");
+            let parsedData = getLocalStorageData("todoList");
+            parsedData[i].checked = true;
+            setLocalStorageData("todoList", parsedData)
+
             titleInput.style.textDecoration = "line-through";
             dueDateInput.style.textDecoration = "line-through";
             priorityInput.style.textDecoration = "line-through";
             detailsInput.style.textDecoration = "line-through";
         } else {
+            let parsedData = getLocalStorageData("todoList");
+            parsedData[i].checked = false;
             console.log("Checkbox is not checked..");
+            setLocalStorageData("todoList", parsedData)
+
+            titleInput.style.textDecoration = "none";
+            dueDateInput.style.textDecoration = "none";
+            priorityInput.style.textDecoration = "none";
+            detailsInput.style.textDecoration = "none"
         }
         });
 
@@ -68,6 +79,8 @@ window.addEventListener("load", () => {
         taskCard.appendChild(editButton);
         taskCard.appendChild(deleteButton);
         taskList.appendChild(taskCard);
+
+        updateCheckBox();
           
     } 
     
@@ -90,12 +103,12 @@ window.addEventListener("load", () => {
             parsedData = parsedData.filter((task, index) => index !== parseInt(num));
         
             localStorage.setItem('todoList', JSON.stringify(parsedData));
-            updateOnSubmit();
+            updateDOM();
 
         }
     } 
     
-    const updateOnSubmit = () => {
+    const updateDOM = () => {
         
         let currentList = localStorage.getItem("todoList");
         let parseObj = JSON.parse(currentList);
@@ -122,6 +135,10 @@ window.addEventListener("load", () => {
                 detailsInput.style.textDecoration = "line-through";
             } else {
                 console.log("Checkbox is not checked..");
+                titleInput.style.textDecoration = "none";
+                dueDateInput.style.textDecoration = "none";
+                priorityInput.style.textDecoration = "none";
+                detailsInput.style.textDecoration = "none"
             }
             });
 
@@ -166,5 +183,43 @@ window.addEventListener("load", () => {
         }        
     }
 
+    const getLocalStorageData= (key) =>{
+        const existingData = localStorage.getItem(key);
+        
+        let Data = existingData ? JSON.parse(existingData) : {};
 
+        return Data;
+    }
+
+    const setLocalStorageData = (key, data) => {
+        localStorage.setItem(key , JSON.stringify(data));
+    }
+
+    const updateCheckBox = () => {
+       let parsedData = getLocalStorageData("todoList")
+        const titleInput = document.querySelector(".title");
+        const dueDateInput = document.querySelector(".date");
+        const priorityInput = document.querySelector(".priority");
+        const detailsInput = document.querySelector(".details");
+        const checkboxInput = document.querySelector(".checkbox");
+        
+       for (let i = 0; i < parsedData.length ; i++){
+        console.log(parsedData[i].checked)
+        if(parsedData[i].checked){
+            console.log("true inside")
+            checkboxInput.checked = true;
+            titleInput.style.textDecoration = "line-through";
+            dueDateInput.style.textDecoration = "line-through";
+            priorityInput.style.textDecoration = "line-through";
+            detailsInput.style.textDecoration = "line-through";
+        }else{
+            checkboxInput.checked = false;
+            titleInput.style.textDecoration = "none";
+            dueDateInput.style.textDecoration = "none";
+            priorityInput.style.textDecoration = "none";
+            detailsInput.style.textDecoration = "none"
+        }
+       }
+
+    }
 homePage();
