@@ -179,8 +179,7 @@ const taskForm = () =>{
     }
 
     const updateOnSubmit = () => {
-        console.log('inside update DOM');
-
+        
         let currentList = localStorage.getItem("todoList");
         let parseObj = JSON.parse(currentList);
         console.log('parseObj',parseObj)
