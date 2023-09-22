@@ -1,6 +1,8 @@
 import todo from "./todo";
 
 const taskForm = () =>{
+
+
     const content = document.getElementById('content'); 
      
     //full screen
@@ -120,12 +122,12 @@ const taskForm = () =>{
     submitButton.onclick = function(){
         let priorityValue = getPriorityValue();
 
-        let todo1 = new todo(titleTextarea.value, detailTextarea.value,dateInput.value, priorityValue)
-        todoList.push(todo1);
+        let todoObj = new todo(titleTextarea.value, detailTextarea.value, dateInput.value, priorityValue)
+        todoList.push(todoObj);
         console.log(todoList.length);
 
-        updateStorage("todoList",todoList)
-        updateTaskListDOM()
+        updateStorage("todoList",todoList,todoObj)
+        updateOnSubmit()
 
         titleTextarea.value = "" ;
         detailTextarea.value = "" ;
@@ -133,6 +135,22 @@ const taskForm = () =>{
         lowInput.checked = false;
         mediumInput.checked = false;
         highInput.checked = false;
+    }
+
+    const updateStorage = (key, arr,obj) =>{
+        const name = localStorage.getItem(key)
+        if(!name){
+            const stringifiedObj = JSON.stringify(arr) ;
+            localStorage.setItem(`${key}`, stringifiedObj);
+        }else{
+            const existingData = localStorage.getItem(key);
+        
+            let parsedData = existingData ? JSON.parse(existingData) : {};
+            console.log(parsedData)
+            parsedData.push(obj);
+
+            localStorage.setItem(key, JSON.stringify(parsedData));
+        }
     }
 
     submitContent.appendChild(submitButton);
@@ -160,45 +178,97 @@ const taskForm = () =>{
         }
     }
 
-    const updateStorage = (key, arr) =>{
-        const stringifiedObj = JSON.stringify(arr) ;
-        localStorage.setItem(`${key}`, stringifiedObj);
-    }
+    const updateOnSubmit = () => {
+        console.log('inside update DOM');
 
-    const updateTaskListDOM = () => {
-        const taskList = document.getElementById('container')
         let currentList = localStorage.getItem("todoList");
         let parseObj = JSON.parse(currentList);
-
-        let priorityValue = getPriorityValue();
-        
+        console.log('parseObj',parseObj)
+        const taskList = document.getElementById('container');
         taskList.innerHTML = "";
 
         for(let i = 0; i < parseObj.length; i++){
             const taskCard = document.createElement('div');
+            taskCard.id = 'wrapper';
+            taskCard.classList.add('todo')
+            
+            const checkboxInput = document.createElement('input');
+            checkboxInput.classList.add('checkbox');
+            checkboxInput.type = "checkbox";
+            var checkbox = document.querySelector("input[name=checkbox]");
 
-            taskCard.innerHTML = 
-            `<div>
-                <input class="checkbox" type="checkbox">
-                <span class = "title">${parseObj[i].title}</span>
-                <button class="details">details</button>
-                <span class="date">${parseObj[i].date}</span>
-                <span class="priority">${priorityValue}</span>
-                <button class="edit">edit</button>
-                <button class="delete">delete</button>
-            </div>`;
+            checkboxInput.addEventListener('change', function() {
+            if (this.checked) {
+                console.log("Checkbox is checked..");
+                titleInput.style.textDecoration = "line-through";
+                dueDateInput.style.textDecoration = "line-through";
+                priorityInput.style.textDecoration = "line-through";
+                detailsInput.style.textDecoration = "line-through";
+            } else {
+                console.log("Checkbox is not checked..");
+            }
+            });
+
+            const titleInput = document.createElement('span');
+            titleInput.classList.add('title');
+            titleInput.textContent = parseObj[i].title;
+
+            const detailsInput = document.createElement('span');
+            detailsInput.classList.add('description');
+            detailsInput.textContent = parseObj[i].description;
+
+            const dueDateInput = document.createElement('span');
+            dueDateInput.classList.add('date');
+            dueDateInput.textContent = parseObj[i].dueDate;
+
+            const priorityInput = document.createElement('span');
+            priorityInput.classList.add('priority');
+            priorityInput.textContent = parseObj[i].priority;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete';
+            deleteButton.id = i;
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click',()=>{
+                console.log(deleteButton.id);
+                let num = deleteButton.id;
+                deleteTasks(num)
+            })
+
+            const editButton = document.createElement('button');
+            editButton.className = 'edit';
+            editButton.textContent = 'Edit';
+
+            taskCard.appendChild(checkboxInput);
+            taskCard.appendChild(titleInput);
+            taskCard.appendChild(dueDateInput);
+            taskCard.appendChild(priorityInput);
+            taskCard.appendChild(editButton);
+            taskCard.appendChild(deleteButton);
             taskList.appendChild(taskCard);
-            const deleteButton = document.querySelector('.delete');
-            deleteButton.onclick = function(){
-                const collection = taskCard.children;
-                console.log(collection[i]);
-                taskCard.removeChild(collection[i]);
+              
+        }        
+    } 
+    const deleteTasks = (num) =>{
+        console.log('parsed',num);
+        let parsedData = [];
+        let currentList = localStorage.getItem("todoList");
+        if (currentList) {
+            try {
+               parsedData = JSON.parse(currentList);
+            //    console.log(parsedData);
+            } catch (error) {
+                console.error('Error parsing JSON data:', error);
             }
         }
-    }
-    const deleteTask = () => {
+        if (Array.isArray(parsedData)) {
+            console.log('filter',parsedData);
+            parsedData = parsedData.filter((task, index) => index !== parseInt(num));
         
-    }
+            localStorage.setItem('todoList', JSON.stringify(parsedData));
+            updateOnSubmit();
+        }
+    } 
 }
 
 export default taskForm;

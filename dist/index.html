@@ -10,15 +10,17 @@
     <script defer="defer" src="form.bundle.js"></script>
     <script defer="defer" src="todo.bundle.js"></script>
   </head>
-  <div id="content"></div>
-    <div id="container">
-      <!-- <input class="checkbox" type="checkbox">
-      <span class = "title">title</span>
+  <body>
+    <div id="content"></div>
+    <div id="container" ></div>
+    <div class = "hide">
+      <input class="checkbox" type="checkbox">
+      <span class = "title">${parseObj[i].title}</span>
       <button class="details">details</button>
-      <span class="date">date</span>
-      <span class="priority">priority</span>
+      <span class="date">${parseObj[i].dueDate}</span>
+      <span class="priority">${priorityValue}</span>
       <button class="edit">edit</button>
-      <button class="delete">delete</button> -->
+      <button class="delete">delete</button>
     </div>
     <!-- <div id="myModal" class="modal">
         <div class="modal-content">

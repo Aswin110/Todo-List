@@ -35,3 +35,44 @@
     text-decoration: none;
     cursor: pointer;
   }
+
+  .hide{
+    display: none;
+  }
+
+  .remove {
+    color: #821818;
+    display: inline-block;
+    padding: 3px 10px;
+    border: 1px solid #d84c4c;
+    border-radius: 2px;
+    cursor: pointer;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    box-sizing: border-box;
+    background: #f1bbc0;
+    font-weight: 700;
+    font-size: 25px;
+}
+
+.todo{
+  margin: 10px;
+}
+
+.title{
+  padding: 20px;
+}
+
+.details{
+  padding: 20px;
+}
+
+.date{
+  padding: 20px;
+}
+
+.priority{
+  padding: 20px;
+}
